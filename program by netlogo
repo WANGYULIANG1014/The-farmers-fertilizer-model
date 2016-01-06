@@ -1,0 +1,119 @@
+breed [ farmers farmer]
+breed [governs govern]
+
+globals[sot
+  train
+  sub
+  pcf
+  fp 
+  ]
+
+turtles-own [
+  k
+  age
+  edu
+  leader
+  sn
+  ope
+  lab
+  part
+  block
+  multi
+  commu
+  water
+  soil
+  envir
+  attention  
+   
+  ]
+
+
+    
+to setup
+  clear-all
+  setup-patches
+  
+ 
+  create-farmers InitialfarmerNumber[
+    set shape "person"
+                             
+    set color blue
+   set age (1 + random 3)
+  set edu (1 + random 3)
+  set leader ( 1 + random 3)
+  set sn ( random 1)
+  set ope (1 + random 4)
+  set lab (1 + random 3) 
+  set part ( random 2)
+  set block (1 + random 4)
+  set multi (1 + random 1)
+  set commu ( random 2)
+  set water ( random 1)
+  set soil (random 1)
+  set envir (random 1)
+  set attention ( random 4)
+
+  set k (0.04 * age - 1.169 * edu - 1.114 * leader + 2.576 * ope + 3.004 * lab + 9.063 * part + 0.6386 * block + 9.071 * multi - 6.493 * commu - 0.605 * water + 0.409 * soil - 0.845 * envir - 6.842 * attention - 6.842 * attention + 5.420 )
+     
+     setxy random-xcor random-ycor
+  ]  
+ reset-ticks
+ 
+
+end
+
+
+to go 
+  let farmer turtles with [ color = blue ]
+  
+  
+  ask farmer [
+     move
+     communication
+     ]
+  
+ 
+ 
+  tick
+  
+end
+
+to setup-patches
+  ask patches [ set pcolor green]
+end
+
+
+
+to move
+  rt (30 -(random-float 60))
+  fd 1
+end
+ 
+ to communication
+   let nearby-farmer one-of farmers with [distance myself < 2] 
+    
+      let nearby-sn [ sn ] of nearby-farmer 
+     let nearby-k [ k ] of nearby-farmer 
+     if  (nearby-sn  >  sn)  and  (random-float  1  <  (nearby-sn -  sn)) [ 
+       set k k + (nearby-k - k) * adjust-rate
+        
+         ] 
+     
+   end
+
+
+    
+
+  
+  ;;picture
+  
+   to-report  chemical-fertilizer-application-rate
+    report mean [ k] of farmers
+    
+      end
+   
+   to-report mean-chemical-fertilizer-application-rate
+    report mean [ k * ope] of farmers / ope 
+    
+      end
+ 
